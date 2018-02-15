@@ -1,15 +1,15 @@
 #!/bin/bash
-#readonly IMAGE_NAME=node_react
-readonly IMAGE_NAME=node:9.4
+readonly DEFAULT_IMAGE=true
+readonly IMAGE_NAME=$([[ "$DEFAULT_IMAGE" == "true" ]] && echo "node:9.4" || echo "node_react")
 readonly CONTAINER_NAME=${IMAGE_NAME%%:*}_${PWD##*/}
 #readonly CONTAINER_NAME=testArtifactsAnalyzer
 readonly PORTS=3000:5000
 
 case $1 in
   create)
-    echo "Experiment using default node image"
-  ;;
-  create2)
+    if [ "$DEFAULT_IMAGE" == "true" ]; then
+      echo "No need to create, using default node image"
+    else
     docker image build -t $IMAGE_NAME . -f-<<EOF
 FROM node:9.4
 
@@ -21,6 +21,7 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 RUN npm install -g create-react-app
 USER root
 EOF
+    fi
   ;;
   run)
     (
@@ -60,9 +61,15 @@ EOF
     echo "Removing container"
     docker rm $CONTAINER_NAME
   ;;
+  rmi)
+    echo "Removing image"
+    docker rmi $IMAGE_NAME
+  ;;
   vars)
+    echo DEFAULT_IMAGE=$DEFAULT_IMAGE
     echo IMAGE_NAME=$IMAGE_NAME
     echo CONTAINER_NAME=$CONTAINER_NAME
+    echo PORTS=$PORTS
   ;;
   help|--help|-h)
     cat <<-TEXT
@@ -72,15 +79,16 @@ Useful scripts to work with docker.
 Usage $0 [option]
 
 Options:
-  create    		Create the node react image
-  run [command] 	Start image with 
-  restart   		Restart container
+  create    		  Create the node react image
+  run [command] 	Start image with
+  restart   		  Restart container
   exec [command] 	Connect to a running container
-  stop      		Stop running container
-  kill      		Kill running container
-  rm        		Remove container
-  vars      		Show vars
-  help      		Show this help
+  stop      		  Stop running container
+  kill      		  Kill running container
+  rm        		  Remove container
+  rmi             Remove image
+  vars      		  Show vars
+  help      		  Show this help
 TEXT
     ;;
     *)

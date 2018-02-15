@@ -2,10 +2,8 @@
 readonly DEFAULT_IMAGE=true
 readonly IMAGE_NAME=$([[ "$DEFAULT_IMAGE" == "true" ]] && echo "node:9.4" || echo "node_react")
 readonly CONTAINER_NAME=${IMAGE_NAME%%:*}_${PWD##*/}
-#readonly CONTAINER_NAME=testArtifactsAnalyzer
 readonly PORTS=3000:5000
 
-command=$([[ -z "${@:2}" ]] && echo "bash" || echo ${@:2})
 main() {
   case $1 in
     create)
@@ -39,30 +37,17 @@ main() {
       vars
     ;;
     help|--help|-h)
-      cat <<-TEXT
-Docker Helper
-Useful scripts to work with docker.
-
-Usage $0 [option]
-
-Options:
-  create    		  Create the node react image
-  run [command] 	Start image with
-  restart   		  Restart container
-  exec [command] 	Connect to a running container
-  stop      		  Stop running container
-  kill      		  Kill running container
-  rm        		  Remove container
-  rmi             Remove image
-  vars      		  Show vars
-  help      		  Show this help
-TEXT
-      ;;
-      *)
-        echo "Option \"$1\" not found!"
-        $0 help
-      ;;
+      help
+    ;;
+    *)
+      echo "Option \"$1\" not found!"
+      help
+    ;;
   esac
+}
+
+command() {
+  echo $([[ -z "${@:2}" ]] && echo "bash" || echo ${@:2})
 }
 
 create() {
@@ -85,21 +70,22 @@ EOF
 
 run() {
   (
-    docker run -it -v "$(pwd):/home/node/app" -w "/home/node/app" --user=node -p $PORTS --name $CONTAINER_NAME $IMAGE_NAME $command
+    docker run -it -v "$(pwd):/home/node/app" -w "/home/node/app" --user=node -p $PORTS --name $CONTAINER_NAME $IMAGE_NAME $(command)
   ) || (
-    echo "Did it failed? Try \"$0 restart\""
+    echo "Trying -> \"$0 restart\""
+    restart $(command)
   )
 }
 
 restart() {
   echo "Restarting"
   docker restart $CONTAINER_NAME
-  exec $command
+  exec $(command)
 }
 
 exec() {
   (
-    docker exec -it $CONTAINER_NAME $command
+    docker exec -it $CONTAINER_NAME $(command)
   ) || (
     echo "Did it failed? Try \"$0 bash\""
   )
@@ -138,7 +124,28 @@ vars() {
   echo IMAGE_NAME=$IMAGE_NAME
   echo CONTAINER_NAME=$CONTAINER_NAME
   echo PORTS=$PORTS
-  echo command=$command
+  echo command=$(command)
+}
+
+help() {
+  cat <<-TEXT
+Docker Helper
+Useful scripts to work with docker.
+
+Usage $0 [option]
+
+Options:
+create          Create the node react image
+run [command] 	Start image with
+restart         Restart container
+exec [command]  Connect to a running container
+stop            Stop running container
+kill            Kill running container
+rm              Remove container
+rmi             Remove image
+vars            Show vars
+help            Show this help
+TEXT
 }
 
 main $@

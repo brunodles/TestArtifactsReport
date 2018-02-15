@@ -4,8 +4,9 @@ import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import { LinearProgress } from 'material-ui/Progress';
-import { Chart } from 'react-google-charts';
-import CoverageTotal from "../coverage/Total"
+import CoverageTotal from "../coverage/Total";
+import TestTotal from "../test/Total";
+import TotalNotFound from "./TotalNotFound";
 
 const styles = theme => ({
   root: {
@@ -16,44 +17,28 @@ const styles = theme => ({
   },
 });
 
+const TOTALS_COMPONENTS = {
+  // checkstyleErrors : TotalsCheckstyleErrors,
+  coverage : CoverageTotal,
+  test : TestTotal,
+  unknown : TotalNotFound
+}
+
 class ModulesTotal extends Component {
 
   render() {
     const { classes } = this.props;
     const { theme } = this.props;
     const result = Object.keys(this.props.data).map((key) => {
-      if (key === "coverage") {
-        const coverageData = this.props.data[key];
-        return (<Grid item key={key}>
-            <Paper className={classes.item}>
-              <CoverageTotal data={coverageData} />
-
-              <Chart
-                chartType="PieChart"
-                data={[['title', 'value'], ['Covered', coverageData.covered], ['Missed', coverageData.missed]]}
-                options={{
-                  pieHole: 0.4,
-                  slices: [
-                    { color: theme.palette.primary.main },
-                    { color: theme.palette.secondary.main }
-                  ]
-                }}
-                width="100%"
-                graph_id="PieChart"
-                legend_toggle
-              />
-              <br/>{JSON.stringify(coverageData)}
-            </Paper>
-          </Grid>);
-        } else {
-          return (<Grid item key={key}>
-            <Paper className={classes.item}>
-              <h3>{key}</h3>
-              {JSON.stringify(this.props.data[key])}
-            </Paper>
-          </Grid>);
-        }
-      });
+      const TagName = TOTALS_COMPONENTS[key] || TOTALS_COMPONENTS["unknown"];
+      const keyData = this.props.data[key];
+      return (<Grid item key={key} xs={12} sm={6} md={4} lg={3}>
+          <Paper className={classes.item}>
+            <TagName name={key} data={keyData} />
+          </Paper>
+        </Grid>
+      );
+    });
     return (<Grid container spacing={8} className={classes.root}>{result}</Grid>);
   }
 }

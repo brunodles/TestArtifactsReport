@@ -5,6 +5,7 @@ import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import { LinearProgress } from 'material-ui/Progress';
 import { Chart } from 'react-google-charts';
+import CoverageTotal from "../coverage/Total"
 
 const styles = theme => ({
   root: {
@@ -25,15 +26,7 @@ class ModulesTotal extends Component {
         const coverageData = this.props.data[key];
         return (<Grid item key={key}>
             <Paper className={classes.item}>
-              <h3>Coverage</h3>
-              <p>Cover Rate: <b>{coverageData.coveredRate}</b>%</p>
-              <LinearProgress
-                className={classes.progress}
-                variant="determinate"
-                size={100}
-                thickness={2.0}
-                value={coverageData.coveredRate}
-              />
+              <CoverageTotal data={coverageData} />
 
               <Chart
                 chartType="PieChart"

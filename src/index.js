@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Report from './Report';
+import Report from './report/Report';
 import data from './report.json'
 import registerServiceWorker from './registerServiceWorker';
 

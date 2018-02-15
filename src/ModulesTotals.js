@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
+import { CircularProgress } from 'material-ui/Progress';
+import { LinearProgress } from 'material-ui/Progress';
 
 const styles = theme => ({
   root: {
@@ -17,11 +19,30 @@ class ModulesTotal extends Component {
   render() {
     const { classes } = this.props;
     const result = Object.keys(this.props.data).map((key) => {
-      return (<Grid item key={key}>
-          <Paper className={classes.item}>
-            {key} - {JSON.stringify(this.props.data[key])}
-          </Paper>
-        </Grid>);
+      if (key === "coverage") {
+        const coverageData = this.props.data[key];
+        return (<Grid item key={key}>
+            <Paper className={classes.item}>
+              <h3>Coverage</h3>
+              <p>Cover Rate: <b>{coverageData.coveredRate}</b>%</p>
+              <LinearProgress
+                className={classes.progress}
+                variant="determinate"
+                size={100}
+                thickness={2.0}
+                value={coverageData.coveredRate}
+              />
+              <br/>{JSON.stringify(coverageData)}
+            </Paper>
+          </Grid>);
+        } else {
+          return (<Grid item key={key}>
+            <Paper className={classes.item}>
+              <h3>{key}</h3>
+              {JSON.stringify(this.props.data[key])}
+            </Paper>
+          </Grid>);
+        }
       });
     return (<Grid container spacing={8} className={classes.root}>{result}</Grid>);
   }

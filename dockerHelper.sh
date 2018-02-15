@@ -2,7 +2,7 @@
 readonly DEFAULT_IMAGE=true
 readonly IMAGE_NAME=$([[ "$DEFAULT_IMAGE" == "true" ]] && echo "node:9.4" || echo "node_react")
 readonly CONTAINER_NAME=${IMAGE_NAME%%:*}_${PWD##*/}
-readonly PORTS=3000:5000
+readonly PORTS=3000:3000
 
 main() {
   case $1 in
@@ -10,16 +10,16 @@ main() {
       create
     ;;
     run)
-      run
+      run $(command ${@:2})
     ;;
     restart)
-      restart
+      restart $(command ${@:2})
     ;;
     exec)
-      exec
+      exec $(command ${@:2})
     ;;
     rootExec)
-      rootExec
+      rootExec $(command ${@:2})
     ;;
     stop)
       stop
@@ -34,7 +34,7 @@ main() {
       rmi
     ;;
     var|vars)
-      vars
+      vars $(command ${@:2})
     ;;
     help|--help|-h)
       help
@@ -47,7 +47,11 @@ main() {
 }
 
 command() {
-  echo $([[ -z "${@:2}" ]] && echo "bash" || echo ${@:2})
+  if [[ -z "$@" ]]; then
+    echo "bash"
+  else
+    echo $@
+  fi
 }
 
 create() {
@@ -70,22 +74,21 @@ EOF
 
 run() {
   (
-    docker run -it -v "$(pwd):/home/node/app" -w "/home/node/app" --user=node -p $PORTS --name $CONTAINER_NAME $IMAGE_NAME $(command)
+    docker run -it -v "$(pwd):/home/node/app" -w "/home/node/app" --user=node -p $PORTS --name $CONTAINER_NAME $IMAGE_NAME $(command $@)
   ) || (
-    echo "Trying -> \"$0 restart\""
-    restart $(command)
+    echo "Did it failed? Try -> \"$0 restart\""
   )
 }
 
 restart() {
   echo "Restarting"
   docker restart $CONTAINER_NAME
-  exec $(command)
+  exec $@
 }
 
 exec() {
   (
-    docker exec -it $CONTAINER_NAME $(command)
+    docker exec -it $CONTAINER_NAME $(command $@)
   ) || (
     echo "Did it failed? Try \"$0 bash\""
   )
@@ -93,7 +96,7 @@ exec() {
 
 rootExec() {
   (
-    docker exec -u 0 -it $CONTAINER_NAME ${@:2}
+    docker exec -u 0 -it $CONTAINER_NAME $(command $@)
   ) || (
     echo "Error"
   )
@@ -124,7 +127,7 @@ vars() {
   echo IMAGE_NAME=$IMAGE_NAME
   echo CONTAINER_NAME=$CONTAINER_NAME
   echo PORTS=$PORTS
-  echo command=$(command)
+  echo command=$@
 }
 
 help() {

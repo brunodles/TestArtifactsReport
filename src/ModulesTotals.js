@@ -4,6 +4,7 @@ import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import { LinearProgress } from 'material-ui/Progress';
+import { Chart } from 'react-google-charts';
 
 const styles = theme => ({
   root: {
@@ -18,6 +19,7 @@ class ModulesTotal extends Component {
 
   render() {
     const { classes } = this.props;
+    const { theme } = this.props;
     const result = Object.keys(this.props.data).map((key) => {
       if (key === "coverage") {
         const coverageData = this.props.data[key];
@@ -31,6 +33,21 @@ class ModulesTotal extends Component {
                 size={100}
                 thickness={2.0}
                 value={coverageData.coveredRate}
+              />
+
+              <Chart
+                chartType="PieChart"
+                data={[['title', 'value'], ['Covered', coverageData.covered], ['Missed', coverageData.missed]]}
+                options={{
+                  pieHole: 0.4,
+                  slices: [
+                    { color: theme.palette.primary.main },
+                    { color: theme.palette.secondary.main }
+                  ]
+                }}
+                width="100%"
+                graph_id="PieChart"
+                legend_toggle
               />
               <br/>{JSON.stringify(coverageData)}
             </Paper>
@@ -48,4 +65,4 @@ class ModulesTotal extends Component {
   }
 }
 
-export default withStyles(styles)(ModulesTotal);
+export default withStyles(styles, {withTheme: true})(ModulesTotal);

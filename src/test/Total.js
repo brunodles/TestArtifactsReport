@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import { LinearProgress } from 'material-ui/Progress';
 import green from 'material-ui/colors/green';
 import yellow from 'material-ui/colors/yellow';
 import red from 'material-ui/colors/red';
@@ -10,7 +9,6 @@ import { Chart } from 'react-google-charts';
 class TestTotal extends Component {
 
   render() {
-    const { classes } = this.props;
     const testData = this.props.data;
     return (
       <div>

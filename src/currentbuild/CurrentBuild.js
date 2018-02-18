@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-
-import Title from './Title.js'
 import Modules from '../modules/Modules.js'
-
-import Button from 'material-ui/Button';
-import { MuiThemeProvider, createMuiTheme, withStyles } from 'material-ui/styles';
+import { withStyles } from 'material-ui/styles';
 
 const styles = theme => ({
   content: {
@@ -14,8 +10,6 @@ const styles = theme => ({
 });
 
 class CurrentBuild extends Component {
-
-    // <Title name={findTitle(this.props)}/>
   render() {
     return (
       <div>
@@ -24,14 +18,6 @@ class CurrentBuild extends Component {
         </div>
       </div>
     );
-  }
-}
-
-function findTitle(props) {
-  try {
-    return props.data.testartifacts.buildInfo.projectName;
-  } catch(error){
-    return "Unknown";
   }
 }
 

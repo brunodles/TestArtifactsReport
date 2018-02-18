@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Grid from 'material-ui/Grid';
 import ModulesTotals from './ModulesTotals.js'
 
 class Modules extends Component {

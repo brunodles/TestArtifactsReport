@@ -6,7 +6,6 @@ class CoverageTotal extends Component {
 
   render() {
     const { classes } = this.props;
-    const { theme } = this.props;
     return (
       <div>
         <h3>Coverage</h3>

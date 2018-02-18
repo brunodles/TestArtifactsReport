@@ -4,13 +4,12 @@ import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import { ListItem, ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
-import CurrentBuild from '../currentbuild/CurrentBuild'
 import data from '../report.json'
 
 import { menuItemsBuilder, None } from './tileData';
@@ -43,6 +42,11 @@ const styles = theme => ({
     },
   },
   drawerHeader: theme.mixins.toolbar,
+  drawerTitle: {
+    margin: theme.spacing.unit * 2,
+    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 3,
+  },
   drawerPaper: {
     width: 250,
     [theme.breakpoints.up('md')]: {
@@ -63,6 +67,14 @@ const styles = theme => ({
     },
   },
 });
+
+function findTitle(data) {
+  try {
+    return data.testartifacts.buildInfo.projectName;
+  } catch(error){
+    return "Unknown";
+  }
+}
 
 const menuItems = menuItemsBuilder(data);
 
@@ -99,18 +111,22 @@ class Report extends React.Component {
 
     const drawerItems = menuItems.map((obj) => {
       if (obj.name === "divider") {
-        return (<Divider />);
+        return (<Divider key={obj.key}/>);
       }
       return (
-        <ListItem button onClick={this.clickHandlerFor(obj)}>
+        <ListItem button key={obj.name} onClick={this.clickHandlerFor(obj)}>
           <ListItemText primary={obj.name} />
         </ListItem>
       );
     });
     const drawer = (
       <div>
-        <div className={classes.drawerHeader} />
-        <Divider />
+        <div key="header" className={classes.drawerHeader} >
+          <Typography variant="display1" className={classes.drawerTitle}>
+            {findTitle(data)}
+          </Typography>
+        </div>
+        <Divider key="divider99"/>
         {drawerItems}
       </div>
     )

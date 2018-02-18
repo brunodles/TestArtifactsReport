@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
-import { LinearProgress } from 'material-ui/Progress';
 import CoverageTotal from "../coverage/Total";
 import TestTotal from "../test/Total";
 import TotalNotFound from "./TotalNotFound";
@@ -28,7 +26,6 @@ class ModulesTotal extends Component {
 
   render() {
     const { classes } = this.props;
-    const { theme } = this.props;
     const result = Object.keys(this.props.data).map((key) => {
       const TagName = TOTALS_COMPONENTS[key] || TOTALS_COMPONENTS["unknown"];
       const keyData = this.props.data[key];

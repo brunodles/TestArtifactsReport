@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Report from './report/Report';
 import data from './report.json'
-import { MuiThemeProvider, createMuiTheme, withStyles } from 'material-ui/styles';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import registerServiceWorker from './registerServiceWorker';
 
 const theme = createMuiTheme({

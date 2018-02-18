@@ -32,7 +32,9 @@ class TestTotal extends Component {
               { color: yellow[400] },
               { color: red[400] },
               { color: deepOrange[400] }
-            ]
+            ],
+            chartArea: {width: '100%', height: '80%'},
+            legend: {position: 'bottom'}
           }}
           width="100%"
           graph_id="PieChart"

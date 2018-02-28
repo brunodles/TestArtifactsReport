@@ -1,6 +1,5 @@
 import React from "react";
 import Report from "./Report";
-import data from "../reportData.json";
 
 class Loader extends React.Component {
   constructor() {
@@ -9,7 +8,7 @@ class Loader extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.url !== undefined) {
+    if (this.props.url !== undefined && this.props.data === undefined) {
       fetch(this.props.url)
         .then(result => result.json())
         .then(items => this.setState({ data: items }));
@@ -17,6 +16,9 @@ class Loader extends React.Component {
   }
 
   render() {
+    if (this.props.data !== undefined) {
+      return (<Report data={this.props.data}/>);
+    }
     if (this.state.data == null) {
       return (<h1>Loading...</h1>);
     }

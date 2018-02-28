@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Report from './report/Report';
-import data from './report.json'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import registerServiceWorker from './registerServiceWorker';
+import ReportLoader from './report/Loader';
 
 const theme = createMuiTheme({
  palette: {
@@ -12,7 +11,7 @@ const theme = createMuiTheme({
      light: '#98ee99',
      main: '#66bb6a',
      dark: '#338a3e',
-     contrastText: '#000000',
+     contrastText: '#fff',
    },
    secondary: {
      light: '#fff64f',
@@ -25,7 +24,7 @@ const theme = createMuiTheme({
 
 const main = (
   <MuiThemeProvider theme={theme}>
-    <Report data={data}/>
+    <ReportLoader url="https://test-artifacts.firebaseio.com/testartifacts/last.json"/>
   </MuiThemeProvider>
 );
 

@@ -10,7 +10,6 @@ import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
-import data from '../report.json'
 
 import { menuItemsBuilder, None } from './tileData';
 
@@ -19,9 +18,11 @@ const drawerWidth = 240;
 const styles = theme => ({
   root: {
     width: '100%',
-    // height: 430,
+    // height: 600,
     zIndex: 1,
-    overflow: 'hidden',
+    // overflow: 'hidden',
+    padding: 0,
+    marggin: 0
   },
   appFrame: {
     position: 'relative',
@@ -76,13 +77,13 @@ function findTitle(data) {
   }
 }
 
-const menuItems = menuItemsBuilder(data);
-
 class Report extends React.Component {
+
   state = {
     mobileOpen: false,
     title: "Test Artifacts",
-    contentTag : None
+    contentTag : None,
+    menuItems : null,
   };
 
   handleDrawerToggle = () => {
@@ -99,17 +100,23 @@ class Report extends React.Component {
   }
 
   componentDidMount() {
+    const menuItems = menuItemsBuilder(this.props.data);
     const item = menuItems[0];
     this.setState({
       title: item.name,
-      contentTag: item.contentTag
+      contentTag: item.contentTag,
+      menuItems : menuItems,
     });
   }
 
   render() {
     const { classes, theme } = this.props;
 
-    const drawerItems = menuItems.map((obj) => {
+    if (this.state.menuItems == null) {
+      return (<h1>Ops</h1>);
+    }
+
+    const drawerItems = this.state.menuItems.map((obj) => {
       if (obj.name === "divider") {
         return (<Divider key={obj.key}/>);
       }
@@ -123,7 +130,7 @@ class Report extends React.Component {
       <div>
         <div key="header" className={classes.drawerHeader} >
           <Typography variant="display1" className={classes.drawerTitle}>
-            {findTitle(data)}
+            {findTitle(this.props.data)}
           </Typography>
         </div>
         <Divider key="divider99"/>
@@ -177,7 +184,7 @@ class Report extends React.Component {
             </Drawer>
           </Hidden>
           <main className={classes.content}>
-            <ContentTag data={data}/>
+            <ContentTag data={this.props.data}/>
           </main>
         </div>
       </div>

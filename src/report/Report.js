@@ -94,7 +94,8 @@ class Report extends React.Component {
     return () => {
       this.setState({
         title: obj.name,
-        contentTag: obj.contentTag
+        contentTag: obj.contentTag,
+        mobileOpen: false,
       })
     }
   }
